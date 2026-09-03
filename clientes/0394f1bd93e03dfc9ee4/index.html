@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Historial de facturas</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, sans-serif; }
+body { margin: 0; background: #f4f6f8; color: #17202a; }
+main { max-width: 680px; margin: 0 auto; padding: 40px 20px; }
+h1 { margin-bottom: 8px; }
+p { color: #5c6770; }
+.filters { display: grid; grid-template-columns: 1fr 180px; gap: 10px; margin: 24px 0 16px; }
+input { box-sizing: border-box; width: 100%; padding: 11px 12px; border: 1px solid #c8d0d6; border-radius: 5px; font: inherit; }
+.notice { color: #a12622; font-size: 12px; margin: 14px 0; }
+ul { list-style: none; padding: 0; }
+li { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center;
+  padding: 16px; margin: 10px 0; background: white; border: 1px solid #dce2e6; border-radius: 6px; }
+a { color: #075985; font-weight: 600; }
+@media (max-width: 560px) { li { grid-template-columns: 1fr auto; } li strong { grid-column: 1 / -1; } }
+</style>
+</head>
+<body><main>
+<h1>Historial de facturas</h1>
+<p>Cliente 0394f1bd93e03dfc9ee4</p>
+<div class="filters">
+<input id="search" type="search" placeholder="Buscar factura o fecha" aria-label="Buscar factura o fecha">
+<input id="date" type="date" aria-label="Filtrar por fecha">
+</div>
+<p class="notice">Las facturas estarán disponibles durante un máximo de 30 días. Después de ese plazo podrán ser retiradas por motivos de privacidad.</p>
+<p id="empty" hidden>No hay facturas que coincidan con el filtro.</p>
+<ul id="invoices"><li data-date="2026-09-03" data-search="2026-09-03 factura más reciente"><strong>Factura más reciente</strong><span>2026-09-03</span><a href="https://docs.google.com/gview?embedded=1&amp;url=https%3A%2F%2Fanderssont-var.github.io%2Ffacturas%2Ffacturas%2F2026%2F09%2FGE1vAeXTnBi3NHAk.pdf" target="_blank" rel="noopener">Ver factura</a></li></ul>
+</main></body></html>
+<script>
+const search = document.getElementById('search');
+const date = document.getElementById('date');
+const empty = document.getElementById('empty');
+const invoices = [...document.querySelectorAll('#invoices li[data-date]')];
+function filterInvoices() {
+    const query = search.value.trim().toLowerCase();
+    const selectedDate = date.value;
+    let visible = 0;
+    invoices.forEach((invoice) => {
+        const matchesText = !query || invoice.dataset.search.includes(query);
+        const matchesDate = !selectedDate || invoice.dataset.date === selectedDate;
+        const show = matchesText && matchesDate;
+        invoice.hidden = !show;
+        if (show) visible += 1;
+    });
+    empty.hidden = visible !== 0;
+}
+search.addEventListener('input', filterInvoices);
+date.addEventListener('change', filterInvoices);
+</script>
